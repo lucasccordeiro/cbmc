@@ -12,6 +12,8 @@ Author: Daniel Kroening, kroening@kroening.com
 /*! \defgroup goto_symex Symbolic execution of goto programs
 */
 
+#include <stack>
+
 #include <util/options.h>
 #include <util/byte_operators.h>
 
@@ -233,9 +235,19 @@ protected:
     const irep_idt &identifier);
   
   // exceptions
-  
+
   void symex_throw(statet &state);
   void symex_catch(statet &state);
+
+  // Update throw target
+  void update_throw_target(statet &state, const goto_programt::const_targett throw_target);
+
+  // This will stack the try-catch blocks
+  typedef std::stack<goto_symex_statet::exceptiont> stack_catcht;
+
+  // Stack of try-catch blocks
+  stack_catcht stack_catch;
+
 
   virtual void do_simplify(exprt &expr);
   
