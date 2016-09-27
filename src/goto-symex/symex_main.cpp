@@ -397,8 +397,13 @@ void goto_symext::symex_step(
     break;
   
   case THROW:
-    symex_throw(state);
-    state.source.pc++;
+    if (!state.guard.is_false())
+    {
+      if(!symex_throw(state))
+        state.source.pc++;
+    }
+    else
+      state.source.pc++;
     break;
     
   case NO_INSTRUCTION_TYPE:

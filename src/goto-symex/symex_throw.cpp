@@ -21,10 +21,9 @@ Function: goto_symext::symex_throw
 
 \*******************************************************************/
 
-void goto_symext::symex_throw(statet &state)
+bool goto_symext::symex_throw(statet &state)
 {
-  //these are used to debug the throw expression
-  irep_idt catch_name = "missing";
+  //this is used to debug the throw expression
   const goto_programt::const_targett *catch_insn = NULL;
 
   const goto_programt::instructiont &instruction=*state.source.pc;
@@ -54,51 +53,33 @@ void goto_symext::symex_throw(statet &state)
     // Do we have a catch for it?
     if(c_it!=except->catch_map.end())
     {
-      //make sure that these are always forward gotos
+      // make sure that these are always forward gotos
       assert(!instruction.is_backwards_goto());
-      update_throw_target(state, c_it->second);
+      target.goto_instruction(state.guard.as_expr(), true_exprt(), state.source);
+      state.source.pc=c_it->second;
 
       // for debug purpose only
       catch_insn = &c_it->second;
-      catch_name = c_it->first;
+
+      if (catch_insn == NULL)
+      {
+        // Log
+        std::cout << "*** Throwing an exception of type " +
+          exceptions_thrown.begin()->id_string() + " but there is not catch for it." << std::endl;
+        return false;
+      }
 
       // Log
       std::cout << "*** Caught by catch("
-        << catch_name << ") at file "
+        << c_it->first << ") at file "
         << (*catch_insn)->source_location.get_file()
         << " line " << (*catch_insn)->source_location.get_line() << std::endl;
+
+      return true;
     }
-    else // We don't have a catch for it
+    else // We don't have a catch for it yet
       assert(0);
   }
-}
 
-/*******************************************************************\
-
-Function: goto_symext::update_throw_target
-
-  Inputs:
-
- Outputs:
-
- Purpose:
-
-\*******************************************************************/
-
-void goto_symext::update_throw_target(statet &state,
-                                      const goto_programt::const_targett throw_target)
-{
-  target.goto_instruction(state.guard.as_expr(), true_exprt(), state.source);
-  goto_programt::const_targett new_state_pc, state_pc;
-
-  // update target
-  new_state_pc=throw_target;
-  state_pc=state.source.pc;
-  state_pc++;
-  state.source.pc=state_pc;
-
-  // put into state-queue
-  statet::goto_state_listt &goto_state_list=
-    state.top().goto_state_map[new_state_pc];
-  goto_state_list.push_back(statet::goto_statet(state));
+  return false;
 }

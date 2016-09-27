@@ -236,15 +236,11 @@ protected:
   
   // exceptions
 
-  void symex_throw(statet &state);
+  bool symex_throw(statet &state);
   void symex_catch(statet &state);
-
-  // Update throw target
-  void update_throw_target(statet &state, const goto_programt::const_targett throw_target);
 
   // This will stack the try-catch blocks
   typedef std::stack<goto_symex_statet::exceptiont> stack_catcht;
-
   // Stack of try-catch blocks
   stack_catcht stack_catch;
 

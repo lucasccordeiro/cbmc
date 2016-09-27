@@ -31,9 +31,6 @@ void goto_symext::symex_catch(statet &state)
     if(stack_catch.empty())
       throw "catch-pop on empty call stack";
 
-    if(state.top().catch_map.empty())
-      throw "catch-pop on function frame";
-
     // Copy the exception before pop
     goto_symex_statet::exceptiont exception=stack_catch.top();
 
