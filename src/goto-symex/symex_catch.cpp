@@ -54,6 +54,9 @@ void goto_symext::symex_catch(statet &state)
         it!=instruction.targets.end();
         it++, i++)
     {
+      // Log
+      std::cout << "*** Exception " << exception_list[i].id()
+                << " at target " << (*it)->target_number << std::endl;
       exception.catch_map[exception_list[i].id()]=*it;
     }
 
