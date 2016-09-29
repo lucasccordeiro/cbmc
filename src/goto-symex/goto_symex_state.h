@@ -283,10 +283,6 @@ public:
     typedef std::map<irep_idt, goto_programt::const_targett> catch_mapt;
     catch_mapt catch_map;
 
-    // list of exception types that can be thrown
-    typedef std::set<irep_idt> throw_list_sett;
-    throw_list_sett throw_list_set;
-
   private:
     bool has_throw_decl;
   };
