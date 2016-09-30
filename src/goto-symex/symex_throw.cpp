@@ -78,7 +78,18 @@ bool goto_symext::symex_throw(statet &state)
       return true;
     }
     else // We don't have a catch for it yet
-      assert(0);
+    {
+      // An un-caught exception.
+      const std::string &msg="Throwing an exception of type " +
+            exceptions_thrown.begin()->id_string() +
+            " but there is not catch for it.";
+
+      // Generate an assertion to fail
+      vcc(false_exprt(), msg, state);
+
+      // Behaves like assume(0);
+      symex_assume(state, false_exprt());
+    }
   }
 
   return false;
