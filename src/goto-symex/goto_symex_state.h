@@ -275,8 +275,33 @@ public:
   {
   public:
     exceptiont() :
-      has_throw_decl(false)
+    uncaught_exception(false)
     {
+    }
+
+    inline void set_uncaught_exception(bool val)
+    {
+      uncaught_exception=true;
+    }
+
+    inline bool get_uncaught_exception(void)
+    {
+      return uncaught_exception;
+    }
+
+    inline void set_uncaught_exception_list(std::string exception)
+    {
+      if (uncaught_exception)
+        uncaught_exception_list.append(", ");
+      else
+        uncaught_exception_list.append("<");
+
+      uncaught_exception_list.append(exception);
+    }
+
+    inline std::string get_uncaught_exception_list(void)
+    {
+      return uncaught_exception_list;
     }
 
     // types -> locations
@@ -284,7 +309,8 @@ public:
     catch_mapt catch_map;
 
   private:
-    bool has_throw_decl;
+    bool uncaught_exception;
+    std::string uncaught_exception_list;
   };
 
   typedef std::vector<framet> call_stackt;

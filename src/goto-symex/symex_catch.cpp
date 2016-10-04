@@ -26,7 +26,7 @@ void goto_symext::symex_catch(statet &state)
   // there are two variants: 'push' and 'pop'
   const goto_programt::instructiont &instruction=*state.source.pc;
 
-  if(instruction.targets.empty()) // The second catch, pop from the stack
+  if(instruction.targets.empty()) // pop
   {
     if(stack_catch.empty())
       throw "catch-pop on empty call stack";
@@ -36,8 +36,22 @@ void goto_symext::symex_catch(statet &state)
 
     // Pop from the stack
     stack_catch.pop();
+
+    if (exception.get_uncaught_exception())
+    {
+      // An un-caught exception.
+      const std::string &msg="Throwing exception of type " +
+    		exception.get_uncaught_exception_list() + ">" +
+            " but there is not catch for it.";
+
+      // Generate an assertion to fail
+      vcc(false_exprt(), msg, state);
+
+      // Behaves like assume(0);
+      //symex_assume(state, false_exprt());
+    }
   }
-  else // The first catch, push it to the stack
+  else // push
   {
     goto_symex_statet::exceptiont exception;
 
@@ -57,6 +71,7 @@ void goto_symext::symex_catch(statet &state)
       // Log
       std::cout << "*** Exception " << exception_list[i].id()
                 << " at target " << (*it)->target_number << std::endl;
+
       exception.catch_map[exception_list[i].id()]=*it;
     }
 

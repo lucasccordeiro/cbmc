@@ -22,6 +22,8 @@ Author: Daniel Kroening, kroening@kroening.com
 #include <ansi-c/c_types.h>
 #include <ansi-c/string_constant.h>
 
+#include <langapi/mode.h>
+
 #include <goto-programs/goto_functions.h>
 #include <linking/static_lifetime_init.h>
 
@@ -164,6 +166,43 @@ void record_function_outputs(
 
 /*******************************************************************\
 
+Function: is_cpp
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+bool is_cpp(const symbol_tablet &symbol_table)
+{
+  std::set<std::string> symbols;
+
+  forall_symbols(it, symbol_table.symbols)
+    symbols.insert(id2string(it->first));
+
+  const namespacet ns(symbol_table);
+
+  for(const std::string &id : symbols)
+  {
+    const symbolt &symbol=ns.lookup(id);
+
+    if(symbol.mode=="")
+      get_default_language();
+    else
+      get_language_from_mode(symbol.mode);
+
+    if (symbol.mode=="cpp")
+      return true;
+  }
+
+  return false;
+}
+
+/*******************************************************************\
+
 Function: ansi_c_entry_point
 
   Inputs:
@@ -247,7 +286,7 @@ bool ansi_c_entry_point(
   code_blockt init_code;
   
   // build call to initialization function
-
+  code_function_callt call_init;
   {
     symbol_tablet::symbolst::iterator init_it=
       symbol_table.symbols.find(INITIALIZE_FUNCTION);
@@ -259,13 +298,14 @@ bool ansi_c_entry_point(
                       << messaget::eom;
       return true;
     }
-  
-    code_function_callt call_init;
+
     call_init.lhs().make_nil();
     call_init.add_source_location()=symbol.location;
     call_init.function()=init_it->second.symbol_expr();
 
-    init_code.move_to_operands(call_init);
+    // for c++ we add call_init to the try-catch block later
+    if (!is_cpp(symbol_table))
+      init_code.move_to_operands(call_init);
   }
 
   // build call to main function
@@ -492,7 +532,43 @@ bool ansi_c_entry_point(
       build_function_environment(parameters, init_code, symbol_table);
   }
 
-  init_code.move_to_operands(call_main);
+  if (is_cpp(symbol_table))
+  {
+	// try block consists of __CPROVER_initialize and main()
+    codet try_block;
+    try_block.set_statement(ID_block);
+    try_block.move_to_operands(call_init);
+    try_block.move_to_operands(call_main);
+
+    // catch block consists of an assert(false);
+    codet catch_block;
+    catch_block.set_statement(ID_assert);
+    exprt false_expr(ID_constant, typet(ID_bool));
+    false_expr.make_false();
+
+    source_locationt source_location = symbol.location;
+    source_location.set_comment("try-catch block");
+    source_location.set_property_class("try-catch");
+
+    false_expr.add_source_location()=source_location;
+    catch_block.move_to_operands(false_expr);
+    catch_block.add_source_location()=source_location;
+
+    //throw expression
+    //codet throw_code;
+    //throw_code.set_statement(ID_throw);
+    //throw_code.set(ID_exception_list, typet(ID_bool));
+    //try_block.move_to_operands(throw_code);
+
+    // add try-catch block
+    codet try_catch;
+    try_catch.set_statement(ID_try_catch);
+    try_catch.move_to_operands(try_block);
+    try_catch.move_to_operands(catch_block);
+    init_code.move_to_operands(try_catch);
+  }
+  else
+    init_code.move_to_operands(call_main);
 
   // TODO: add read/modified (recursively in call graph) globals as INPUT/OUTPUT
 
