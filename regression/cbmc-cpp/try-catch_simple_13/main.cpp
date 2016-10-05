@@ -1,12 +1,11 @@
 #include <assert.h>
-
-int main()
-{
+int main() {
   try {
+    throw 2;
     throw 1.1f;
-    assert(0);
+//    assert(0);
   }
-  catch(int e) {
+  catch(char e) {
     return 1;
   }
   return 0;
