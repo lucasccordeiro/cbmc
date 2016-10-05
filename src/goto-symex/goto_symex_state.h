@@ -281,7 +281,7 @@ public:
 
     inline void set_uncaught_exception(bool val)
     {
-      uncaught_exception=true;
+      uncaught_exception=val;
     }
 
     inline bool get_uncaught_exception(void)

@@ -237,12 +237,13 @@ protected:
   // exceptions
 
   bool symex_throw(statet &state);
-  void symex_catch(statet &state);
+  bool symex_catch(statet &state);
 
   // This will stack the try-catch blocks
   typedef std::stack<goto_symex_statet::exceptiont> stack_catcht;
   // Stack of try-catch blocks
   stack_catcht stack_catch;
+  bool is_uncaught_exception;
 
 
   virtual void do_simplify(exprt &expr);

@@ -21,7 +21,7 @@ Function: goto_symext::symex_catch
 
 \*******************************************************************/
 
-void goto_symext::symex_catch(statet &state)
+bool goto_symext::symex_catch(statet &state)
 {
   // there are two variants: 'push' and 'pop'
   const goto_programt::instructiont &instruction=*state.source.pc;
@@ -44,16 +44,23 @@ void goto_symext::symex_catch(statet &state)
     		exception.get_uncaught_exception_list() + ">" +
             " but there is not catch for it.";
 
-      // Generate an assertion to fail
-      vcc(false_exprt(), msg, state);
+      is_uncaught_exception=true;
 
-      // Behaves like assume(0);
-      //symex_assume(state, false_exprt());
+      return true;
+    }
+    else if (is_uncaught_exception)
+    {
+      assert(!instruction.is_backwards_goto());
+      target.goto_instruction(state.guard.as_expr(), true_exprt(), state.source);
+      state.source.pc=exception.catch_map.begin()->second;
+      is_uncaught_exception=false;
+      return false;
     }
   }
   else // push
   {
     goto_symex_statet::exceptiont exception;
+    is_uncaught_exception=false;
 
     // copy targets
     const irept::subt &exception_list=
@@ -78,4 +85,6 @@ void goto_symext::symex_catch(statet &state)
     // Stack it
     stack_catch.push(exception);
   }
+
+  return true;
 }

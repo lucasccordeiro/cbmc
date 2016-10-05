@@ -392,8 +392,8 @@ void goto_symext::symex_step(
     break;
     
   case CATCH:
-    symex_catch(state);
-    state.source.pc++;
+    if (symex_catch(state))
+      state.source.pc++;
     break;
   
   case THROW:
