@@ -243,7 +243,20 @@ protected:
   typedef std::stack<goto_symex_statet::exceptiont> stack_catcht;
   // Stack of try-catch blocks
   stack_catcht stack_catch;
+  // Check un-caught exception
   bool is_uncaught_exception;
+
+  inline void set_uncaught_exception(bool val)
+  {
+    is_uncaught_exception=val;
+  }
+
+  inline bool get_uncaught_exception(void)
+  {
+    return is_uncaught_exception;
+  }
+
+
 
 
   virtual void do_simplify(exprt &expr);

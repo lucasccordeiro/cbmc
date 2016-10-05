@@ -44,23 +44,23 @@ bool goto_symext::symex_catch(statet &state)
     		exception.get_uncaught_exception_list() + ">" +
             " but there is not catch for it.";
 
-      is_uncaught_exception=true;
+      set_uncaught_exception(true);
 
       return true;
     }
-    else if (is_uncaught_exception)
+    else if (get_uncaught_exception())
     {
       assert(!instruction.is_backwards_goto());
       target.goto_instruction(state.guard.as_expr(), true_exprt(), state.source);
       state.source.pc=exception.catch_map.begin()->second;
-      is_uncaught_exception=false;
+      set_uncaught_exception(false);
       return false;
     }
   }
   else // push
   {
     goto_symex_statet::exceptiont exception;
-    is_uncaught_exception=false;
+    set_uncaught_exception(false);
 
     // copy targets
     const irept::subt &exception_list=
