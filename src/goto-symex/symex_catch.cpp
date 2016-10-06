@@ -44,9 +44,8 @@ bool goto_symext::symex_catch(statet &state)
     		exception.get_uncaught_exception_list() + ">" +
             " but there is not catch for it.";
 
-      set_uncaught_exception_msg(msg);
-      set_uncaught_exception(true);
-
+      //set_uncaught_exception_msg(msg);
+      set_uncaught_exception(true,msg);
       return true;
     }
     else if (get_uncaught_exception())
@@ -60,7 +59,6 @@ bool goto_symext::symex_catch(statet &state)
   else // push
   {
     goto_symex_statet::exceptiont exception;
-    set_uncaught_exception(false);
 
     // copy targets
     const irept::subt &exception_list=

@@ -77,14 +77,14 @@ bool goto_symext::symex_throw(statet &state)
 
       return true;
     }
-    else // We don't have a catch for it yet
+    else // We don't have a catch for it
     {
-      // Set the un-caught exception list
+      // Set the un-caught exception list with the exception id
       except->set_uncaught_exception_list(exceptions_thrown.begin()->id_string());
+      // We have found an un-caught_exception in the try-catch block
       except->set_uncaught_exception(true);
-      // Do not check assertions after an un-caught exception
+      // Do not check assertions after finding an un-caught exception
       set_uncaught_exception(true);
-
    	  // Log
       std::cout << "*** Throwing an exception of type " +
         exceptions_thrown.begin()->id_string() +

@@ -244,16 +244,16 @@ protected:
   typedef std::stack<goto_symex_statet::exceptiont> stack_catcht;
   // Stack of try-catch blocks
   stack_catcht stack_catch;
-  // Check un-caught exception
+  // Un-caught exception
   bool uncaught_exception;
   // Un-caught exception message
   std::string uncaught_exception_msg;
-
+/*
   inline void set_uncaught_exception_msg(const std::string msg)
   {
     uncaught_exception_msg=msg;
   }
-
+*/
   inline bool is_uncaught_exception_msg_empty(void) const
   {
     return uncaught_exception_msg.empty();
@@ -262,6 +262,12 @@ protected:
   inline std::string get_uncaught_exception_msg(void) const
   {
     return uncaught_exception_msg;
+  }
+
+  inline void set_uncaught_exception(const bool val, const std::string msg)
+  {
+    uncaught_exception=val;
+    uncaught_exception_msg=msg;
   }
 
   inline void set_uncaught_exception(const bool val)

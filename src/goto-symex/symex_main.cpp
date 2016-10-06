@@ -307,24 +307,26 @@ void goto_symext::symex_step(
     if(!state.guard.is_false())
     {
       std::string msg;
-
-      // do we have an un-caught exception?
+      // Do we have an un-caught exception?
       if (get_uncaught_exception())
       {
-        // this assertion is checked only after an un-caught exception
+        // This assertion is located after an un-caught exception
     	if (is_uncaught_exception_msg_empty())
     	{
     	  state.source.pc++;
     	  break;
     	}
-    	// set the un-caught exception list
+    	// Set the un-caught exception message
    	    msg=get_uncaught_exception_msg();
+   	    // We now generate a vcc to check that un-caught exception
     	set_uncaught_exception(false);
       }
       else
+      {
         msg=id2string(state.source.pc->source_location.get_comment());
+        if(msg=="") msg="assertion";
+      }
 
-      if(msg=="") msg="assertion";
       exprt tmp(instruction.guard);
       clean_expr(tmp, state, false);
       vcc(tmp, msg, state);
