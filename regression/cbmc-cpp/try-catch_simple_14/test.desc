@@ -3,8 +3,8 @@ main.cpp
 
 ^EXIT=10$
 ^SIGNAL=0$
-^\[main.assertion.1\] assertion 0: SUCCESSFUL
-^\[try-catch.1\] try-catch block: FAILURE
+^\[main.assertion.1\] assertion 0: SUCCESS$
+^\[try-catch.1\] try-catch block: FAILURE$
 ^VERIFICATION FAILED$
 --
 ^warning: ignoring
