@@ -308,8 +308,16 @@ void goto_symext::symex_step(
     {
       std::string msg;
 
+      // do we have an un-caught exception?
       if (get_uncaught_exception())
       {
+        // this assertion is checked only after an un-caught exception
+    	if (is_uncaught_exception_msg_empty())
+    	{
+    	  state.source.pc++;
+    	  break;
+    	}
+    	// set the un-caught exception list
    	    msg=get_uncaught_exception_msg();
     	set_uncaught_exception(false);
       }

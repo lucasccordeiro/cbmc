@@ -81,6 +81,7 @@ bool goto_symext::symex_throw(statet &state)
     {
       except->set_uncaught_exception_list(exceptions_thrown.begin()->id_string());
       except->set_uncaught_exception(true);
+      set_uncaught_exception(true);
 
    	  // Log
       std::cout << "*** Throwing an exception of type " +
