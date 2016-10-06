@@ -54,11 +54,11 @@ public:
     ns(_ns),
     target(_target),
     atomic_section_counter(0),
-    guard_identifier("goto_symex::\\guard")
+    guard_identifier("goto_symex::\\guard"),
+    uncaught_exception(false)
   {
     options.set_option("simplify", true);
     options.set_option("assertions", true);
-    is_uncaught_exception=false;
   }
   
   virtual ~goto_symext()
@@ -245,7 +245,7 @@ protected:
   // Stack of try-catch blocks
   stack_catcht stack_catch;
   // Check un-caught exception
-  bool is_uncaught_exception;
+  bool uncaught_exception;
   // Un-caught exception message
   std::string uncaught_exception_msg;
 
@@ -266,12 +266,12 @@ protected:
 
   inline void set_uncaught_exception(const bool val)
   {
-    is_uncaught_exception=val;
+    uncaught_exception=val;
   }
 
   inline bool get_uncaught_exception(void) const
   {
-    return is_uncaught_exception;
+    return uncaught_exception;
   }
 
 
