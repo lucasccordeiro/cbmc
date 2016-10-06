@@ -245,13 +245,25 @@ protected:
   stack_catcht stack_catch;
   // Check un-caught exception
   bool is_uncaught_exception;
+  // Un-caught exception message
+  std::string uncaught_exception_msg;
 
-  inline void set_uncaught_exception(bool val)
+  inline void set_uncaught_exception_msg(const std::string msg)
+  {
+    uncaught_exception_msg=msg;
+  }
+
+  inline std::string get_uncaught_exception_msg(void) const
+  {
+    return uncaught_exception_msg;
+  }
+
+  inline void set_uncaught_exception(const bool val)
   {
     is_uncaught_exception=val;
   }
 
-  inline bool get_uncaught_exception(void)
+  inline bool get_uncaught_exception(void) const
   {
     return is_uncaught_exception;
   }

@@ -44,6 +44,7 @@ bool goto_symext::symex_catch(statet &state)
     		exception.get_uncaught_exception_list() + ">" +
             " but there is not catch for it.";
 
+      set_uncaught_exception_msg(msg);
       set_uncaught_exception(true);
 
       return true;
@@ -53,7 +54,6 @@ bool goto_symext::symex_catch(statet &state)
       assert(!instruction.is_backwards_goto());
       target.goto_instruction(state.guard.as_expr(), true_exprt(), state.source);
       state.source.pc=exception.catch_map.begin()->second;
-      set_uncaught_exception(false);
       return false;
     }
   }
