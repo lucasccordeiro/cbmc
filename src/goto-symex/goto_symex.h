@@ -58,6 +58,7 @@ public:
   {
     options.set_option("simplify", true);
     options.set_option("assertions", true);
+    is_uncaught_exception=false;
   }
   
   virtual ~goto_symext()
