@@ -4,7 +4,7 @@ main.cpp
 ^EXIT=10$
 ^SIGNAL=0$
 ^\[main.assertion.1\] assertion 0: FAILURE$
-^\[try-catch.1\] try-catch block: SUCCESS$
+^\[try-catch.1\] un-caught exception: SUCCESS$
 ^VERIFICATION FAILED$
 --
 ^warning: ignoring
