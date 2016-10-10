@@ -547,7 +547,7 @@ bool ansi_c_entry_point(
     false_expr.make_false();
 
     source_locationt source_location = symbol.location;
-    source_location.set_comment("try-catch block");
+    source_location.set_comment("un-caught exception");
     source_location.set_property_class("try-catch");
 
     false_expr.add_source_location()=source_location;
