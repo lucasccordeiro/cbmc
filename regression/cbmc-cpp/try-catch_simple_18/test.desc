@@ -1,0 +1,11 @@
+CORE
+main.cpp
+
+^EXIT=10$
+^SIGNAL=0$
+^\[main.pointer_dereference.1] throwing null in array: SUCCESS$
+^\[main.assertion.1] assertion 0: FAILURE$
+^\[try-catch.1] un-caught exception: SUCCESS$
+^VERIFICATION FAILED$
+--
+^warning: ignoring
