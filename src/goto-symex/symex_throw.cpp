@@ -86,9 +86,25 @@ bool goto_symext::symex_throw(statet &state)
       // Do not check assertions after finding an un-caught exception
       set_uncaught_exception(true);
    	  // Log
-      std::cout << "*** Throwing an exception of type " +
+      std::cout << "*** Throwing an exception of type '" +
         exceptions_thrown.begin()->id_string() +
-        " but there is not catch for it." << std::endl;
+        "' but there is not catch for it." << std::endl;
+
+      // Copy the first exception, which is related to the try-catch block
+      goto_symex_statet::exceptiont exception;
+
+      while (!stack_catch.empty())
+      {
+        exception=stack_catch.top();
+        stack_catch.pop();
+      }
+
+      assert(!instruction.is_backwards_goto());
+      target.goto_instruction(state.guard.as_expr(), true_exprt(), state.source);
+      state.source.pc=exception.catch_map.begin()->second;
+      stack_catch.push(exception);
+
+      return true;
     }
   }
 
