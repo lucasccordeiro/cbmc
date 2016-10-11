@@ -1,0 +1,13 @@
+CORE
+main.cpp
+
+^EXIT=10$
+^SIGNAL=0$
+^\[main.assertion.1\] assertion 0: SUCCESS$
+^\[main.assertion.2\] assertion 0: SUCCESS$
+^\[main.assertion.3\] assertion 0: SUCCESS$
+^\[main.assertion.4\] assertion 0: SUCCESS$
+^\[try-catch.1\] un-caught exception: FAILURE$
+^VERIFICATION FAILED$
+--
+^warning: ignoring
