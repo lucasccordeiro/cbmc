@@ -6,6 +6,7 @@ Author: Daniel Kroening, kroening@kroening.com
 
 \*******************************************************************/
 
+#include <iostream>
 #include <cassert>
 
 #include <util/std_expr.h>
@@ -306,25 +307,22 @@ void goto_symext::symex_step(
   case ASSERT:
     if(!state.guard.is_false())
     {
-      std::string msg;
+      std::string msg=id2string(state.source.pc->source_location.get_comment());
+      if(msg=="") msg="assertion";
+
       // Do we have an un-caught exception?
       if (get_uncaught_exception())
       {
-        // This assertion is located after an un-caught exception
-    	if (is_uncaught_exception_msg_empty())
+    	// Do we have an assertion related to an un-caught exception?
+    	if (msg.compare("un-caught exception"))
     	{
+    	  // This assertion is located after an un-caught exception
     	  state.source.pc++;
     	  break;
     	}
-    	// Set the un-caught exception message
+    	// Set the message with all un-caught exceptions
    	    msg=get_uncaught_exception_msg();
-   	    // We now generate a vcc to check that un-caught exception
     	set_uncaught_exception(false);
-      }
-      else
-      {
-        msg=id2string(state.source.pc->source_location.get_comment());
-        if(msg=="") msg="assertion";
       }
 
       exprt tmp(instruction.guard);
