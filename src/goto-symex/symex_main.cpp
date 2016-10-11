@@ -320,9 +320,8 @@ void goto_symext::symex_step(
     	  state.source.pc++;
     	  break;
     	}
-    	// Set the message with all un-caught exceptions
+    	// Update the message with all un-caught exceptions
    	    msg=get_uncaught_exception_msg();
-    	set_uncaught_exception(false);
       }
 
       exprt tmp(instruction.guard);
