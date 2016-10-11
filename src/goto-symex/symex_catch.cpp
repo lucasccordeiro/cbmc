@@ -86,3 +86,35 @@ bool goto_symext::symex_catch(statet &state)
 
   return true;
 }
+
+/*******************************************************************\
+
+Function: goto_symext::check_uncaught_exception
+
+  Inputs:
+
+ Outputs:
+
+ Purpose:
+
+\*******************************************************************/
+
+bool goto_symext::check_uncaught_exception(statet &state, std::string &msg)
+{
+  // Do we have an un-caught exception?
+  if (get_uncaught_exception())
+  {
+	// Do we have an assertion related to an un-caught exception?
+	if (msg.compare("un-caught exception"))
+	{
+	  // This assertion is located after an un-caught exception
+	  state.source.pc++;
+	  return true;
+	}
+    // Update the message with all un-caught exceptions
+	msg=get_uncaught_exception_msg();
+  }
+
+  return false;
+}
+

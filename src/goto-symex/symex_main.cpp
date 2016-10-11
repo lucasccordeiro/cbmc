@@ -309,21 +309,7 @@ void goto_symext::symex_step(
     {
       std::string msg=id2string(state.source.pc->source_location.get_comment());
       if(msg=="") msg="assertion";
-
-      // Do we have an un-caught exception?
-      if (get_uncaught_exception())
-      {
-    	// Do we have an assertion related to an un-caught exception?
-    	if (msg.compare("un-caught exception"))
-    	{
-    	  // This assertion is located after an un-caught exception
-    	  state.source.pc++;
-    	  break;
-    	}
-    	// Update the message with all un-caught exceptions
-   	    msg=get_uncaught_exception_msg();
-      }
-
+      if (check_uncaught_exception(state,msg)) break;
       exprt tmp(instruction.guard);
       clean_expr(tmp, state, false);
       vcc(tmp, msg, state);
