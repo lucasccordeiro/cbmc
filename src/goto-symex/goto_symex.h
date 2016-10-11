@@ -248,16 +248,6 @@ protected:
   bool uncaught_exception;
   // Un-caught exception message
   std::string uncaught_exception_msg;
-/*
-  inline void set_uncaught_exception_msg(const std::string msg)
-  {
-    uncaught_exception_msg=msg;
-  }
-*/
-  inline bool is_uncaught_exception_msg_empty(void) const
-  {
-    return uncaught_exception_msg.empty();
-  }
 
   inline std::string get_uncaught_exception_msg(void) const
   {
