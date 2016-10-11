@@ -99,7 +99,7 @@ Function: goto_symext::check_uncaught_exception
 
 \*******************************************************************/
 
-bool goto_symext::check_uncaught_exception(statet &state, std::string &msg)
+bool goto_symext::check_all_uncaught_exceptions(statet &state, std::string &msg)
 {
   // Do we have an un-caught exception?
   if (get_uncaught_exception())

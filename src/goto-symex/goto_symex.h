@@ -239,7 +239,7 @@ protected:
 
   bool symex_throw(statet &state);
   bool symex_catch(statet &state);
-  bool check_uncaught_exception(statet &state, std::string &msg);
+  bool check_all_uncaught_exceptions(statet &state, std::string &msg);
 
   // This will stack the try-catch blocks
   typedef std::stack<goto_symex_statet::exceptiont> stack_catcht;

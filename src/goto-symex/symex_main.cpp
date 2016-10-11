@@ -309,7 +309,7 @@ void goto_symext::symex_step(
     {
       std::string msg=id2string(state.source.pc->source_location.get_comment());
       if(msg=="") msg="assertion";
-      if (check_uncaught_exception(state,msg)) break;
+      if(check_all_uncaught_exceptions(state,msg)) break;
       exprt tmp(instruction.guard);
       clean_expr(tmp, state, false);
       vcc(tmp, msg, state);
