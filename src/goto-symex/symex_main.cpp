@@ -308,7 +308,7 @@ void goto_symext::symex_step(
     {
       std::string msg=id2string(state.source.pc->source_location.get_comment());
       if(msg=="") msg="assertion";
-      if(options.get_bool_option("try-catch") && check_all_uncaught_exceptions(state,msg)) break;
+      if(options.get_bool_option("catch-all") && check_all_uncaught_exceptions(state,msg)) break;
       exprt tmp(instruction.guard);
       clean_expr(tmp, state, false);
       vcc(tmp, msg, state);

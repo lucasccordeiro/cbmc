@@ -175,8 +175,8 @@ void cbmc_parse_optionst::get_command_line_options(optionst &options)
   if(cmdline.isset("cpp11"))
     config.cpp.set_cpp11();
 
-  if(cmdline.isset("try-catch"))
-    options.set_option("try-catch", true);
+  if(cmdline.isset("catch-all"))
+    options.set_option("catch-all", true);
 
   if(cmdline.isset("no-simplify"))
     options.set_option("simplify", false);
@@ -1140,7 +1140,7 @@ void cbmc_parse_optionst::help()
     " --round-to-minus-inf         rounding towards minus infinity\n"
     " --round-to-zero              rounding towards zero\n"
     " --function name              set main function name\n"
-    " --try-catch                  catches all uncaught exceptions\n"
+    " --catch-all                  catch all uncaught exceptions\n"
     "\n"
     "Program representations:\n"
     " --show-parse-tree            show parse tree\n"
