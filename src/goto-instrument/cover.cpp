@@ -113,7 +113,6 @@ coverage_goalst coverage_goalst::get_coverage_goals(const std::string &coverage,
       it!=json.array.end();
       it++)
   {
-
     //get the file of each existing goal
     file=(*it)["file"].value;
     source_location.set_file(file);
