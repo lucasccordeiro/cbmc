@@ -343,10 +343,19 @@ static bool implicit(const namespacet &ns, goto_programt::const_targett target)
 
   const symbol_exprt &s=to_symbol_expr(a.lhs());
 
-  std::string identifier (s.get_identifier().c_str());
-
-  if (identifier.find("return_value")!=std::string::npos)
-    return true;
+  if(a.rhs().id()==ID_symbol)
+  {
+    const symbol_exprt &t=to_symbol_expr(a.rhs());
+    std::string rhs_identifier (t.get_identifier().c_str());
+    if (rhs_identifier.find("return_value")!=std::string::npos)
+      return true;
+  }
+  else
+  {
+    std::string lhs_identifier (s.get_identifier().c_str());
+    if (lhs_identifier.find("return_value")!=std::string::npos)
+      return true;
+  }
 
   if (s.source_location().get_function().empty())
   {
