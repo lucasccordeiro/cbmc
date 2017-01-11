@@ -6,6 +6,8 @@ Author: Daniel Kroening, kroening@kroening.com
 
 \*******************************************************************/
 
+#include <iostream>
+
 #include <util/find_symbols.h>
 #include <util/cprover_prefix.h>
 #include <util/prefix.h>
@@ -335,6 +337,8 @@ static bool implicit(const namespacet &ns, goto_programt::const_targett target)
 
   const code_assignt &a=to_code_assign(target->code);
   if(a.lhs().id()==ID_dereference) return true;
+
+  if(a.lhs().id()==ID_index) return true;
   if(a.lhs().id()!=ID_symbol) return false;
 
   const symbol_exprt &s=to_symbol_expr(a.lhs());
