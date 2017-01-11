@@ -336,12 +336,17 @@ static bool implicit(const namespacet &ns, goto_programt::const_targett target)
   if(!target->is_assign()) return false;
 
   const code_assignt &a=to_code_assign(target->code);
-  if(a.lhs().id()==ID_dereference) return true;
 
+  if(a.lhs().id()==ID_dereference) return true;
   if(a.lhs().id()==ID_index) return true;
   if(a.lhs().id()!=ID_symbol) return false;
 
   const symbol_exprt &s=to_symbol_expr(a.lhs());
+
+  std::string identifier (s.get_identifier().c_str());
+
+  if (identifier.find("return_value")!=std::string::npos)
+    return true;
 
   if (s.source_location().get_function().empty())
   {
