@@ -876,13 +876,6 @@ bool cbmc_parse_optionst::process_goto_program(
       cmdline.isset("pointer-check"));
     remove_virtual_functions(symbol_table, goto_functions);
 
-    // full slice?
-    if(cmdline.isset("full-slice"))
-    {
-      status() << "Performing a full slice" << eom;
-      full_slicer(goto_functions, ns);
-    }
-
     // do partial inlining
     status() << "Partial Inlining" << eom;
     goto_partial_inline(goto_functions, ns, ui_message_handler);
@@ -968,6 +961,30 @@ bool cbmc_parse_optionst::process_goto_program(
         instrument_cover_goals(symbol_table, goto_functions, criterion);
 
       goto_functions.update();
+    }
+
+    // full slice?
+    if(cmdline.isset("full-slice"))
+    {
+      status() << "Performing a full slice" << eom;
+      remove_virtual_functions(symbol_table,goto_functions);
+      remove_function_pointers(symbol_table,goto_functions,cmdline.isset("pointer-check"));
+      remove_returns(symbol_table,goto_functions);
+      goto_functions.update();
+
+      //status() << "Performing full inlining" << eom;
+      //goto_inline(goto_functions, ns, ui_message_handler);
+
+      try
+      {
+        full_slicer(goto_functions, ns);
+      }
+
+      catch(const char *error_msg)
+      {
+        error() << error_msg << eom;
+        return 1;
+      }
     }
 
     // remove skips
