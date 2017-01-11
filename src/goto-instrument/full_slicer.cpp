@@ -8,6 +8,8 @@ Author: Daniel Kroening, kroening@kroening.com
 
 #include <util/find_symbols.h>
 #include <util/cprover_prefix.h>
+#include <util/prefix.h>
+
 #ifdef DEBUG_FULL_SLICERT
 #endif
 
@@ -321,18 +323,38 @@ Function: implicit
 
 \*******************************************************************/
 
-static bool implicit(goto_programt::const_targett target)
+static bool implicit(const namespacet &ns, goto_programt::const_targett target)
 {
   // some variables are used during symbolic execution only
 
+  const irep_idt &statement=target->code.get(ID_statement);
+  if (statement==ID_array_copy) return true;
+
+  if (target->is_assume()) return true;
   if(!target->is_assign()) return false;
 
   const code_assignt &a=to_code_assign(target->code);
+  if(a.lhs().id()==ID_dereference) return true;
   if(a.lhs().id()!=ID_symbol) return false;
 
   const symbol_exprt &s=to_symbol_expr(a.lhs());
 
-  return s.get_identifier()==CPROVER_PREFIX "rounding_mode";
+  if (s.source_location().get_function().empty())
+  {
+    // is it a __CPROVER_* variable?
+    if(has_prefix(id2string(s.get_identifier()), CPROVER_PREFIX))
+	  return true;
+
+    // static lifetime?
+    if(ns.lookup(s.get_identifier()).is_static_lifetime)
+      return true;
+  }
+
+  if (s.get_identifier()==CPROVER_PREFIX "rounding_mode" ||
+      s.get_identifier()==CPROVER_PREFIX "deallocated")
+    return true;
+
+  return false;
 }
 
 /*******************************************************************\
@@ -369,7 +391,7 @@ void full_slicert::operator()(
   {
     if(criterion(e_it->first))
       add_to_queue(queue, e_it->second, e_it->first);
-    else if(implicit(e_it->first))
+    else if(implicit(ns,e_it->first))
       add_to_queue(queue, e_it->second, e_it->first);
     else if((e_it->first->is_goto() && e_it->first->guard.is_true()) ||
             e_it->first->is_throw())
@@ -384,6 +406,8 @@ void full_slicert::operator()(
       const exprt &s=to_code_dead(e_it->first->code).symbol();
       decl_dead[to_symbol_expr(s).get_identifier()].push(e_it->second);
     }
+    else if(e_it->first->is_function_call())
+      add_to_queue(queue, e_it->second, e_it->first);
   }
 
   // compute program dependence graph (and post-dominators)
@@ -399,6 +423,9 @@ void full_slicert::operator()(
   Forall_goto_functions(f_it, goto_functions)
     if(f_it->second.body_available())
     {
+   	  if(f_it->first=="pthread_create")
+   		throw "--full-slice does not support C/Pthreads yet";
+
       Forall_goto_program_instructions(i_it, f_it->second.body)
       {
         const cfgt::entryt &e=cfg.entry_map[i_it];
